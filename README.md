@@ -46,25 +46,32 @@ Plus one menu-navigated item:
 
 ## Architecture
 
-```
-┌──────────────┐     ┌───────────────┐     ┌──────────────────┐
-│  Web Browser  │◄──►│  FastAPI App   │◄──►│  Hayward Controller│
-│  (Dashboard)  │    │  :8700         │    │  AquaConnect      │
-└──────────────┘     └───────┬───────┘     └──────────────────┘
-                             │
-               ┌─────────────▼─────────────┐
-               │  Airflow DAG              │
-               │  (runs every minute)      │
-               └─────────────┬─────────────┘
-                             │
-                      ┌──────▼────────┐
-                      │ Hayward Controller│
-                      └─────────────────┘
+```mermaid
+flowchart TB
+    subgraph browser["🌐 Browser"]
+        dashboard["Dashboard UI\nhttp://server:8700"]
+    end
 
-┌──────────────┐     ┌──────────────┐
-│ systemd timer │    │  SQLite DB   │
-│ (sensor poll) │──► │  metrics.db  │
-└──────────────┘     └──────────────┘
+    subgraph server["⚙️ Server"]
+        app["FastAPI Web App\nport 8700"]
+        poller["Background Poller\n15 s interval"]
+        db[(SQLite\nmetrics.db)]
+    end
+
+    subgraph airflow["🔄 Airflow"]
+        dag["pool_equipment_scheduler DAG\nruns every minute"]
+    end
+
+    controller["🏊 Hayward AquaConnect\nController"]
+    timer["⏱️ systemd Timer\nsensor poll 30 min"]
+
+    dashboard <-->|GET /api/status\nPOST /api/toggle| app
+    app <-->|HTTP POST /WNewSt.htm| controller
+    poller -->|polls states every 15 s| controller
+    poller -->|records ON/OFF snapshots| db
+    timer -->|POST /api/poll-sensors| app
+    dag -->|toggle equipment slots| controller
+    app -->|sync schedules to variable| airflow
 ```
 
 ### How it works
