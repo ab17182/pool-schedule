@@ -275,11 +275,11 @@ Once the web app is running at `http://<server>:8700`, you get four tabs:
 - Airflow DAG run history (last 20 runs with state and duration)
 
 ### Analytics Tab
-- KPI tiles: current air temp, salt level, filter/heater hours (7d)
+- KPI tiles: current air temp, salt level, filter/heater active hours (7d)
 - **Air Temperature Trend** — line chart of daily averages/min/max
-- **Equipment Runtime (7d)** — bar chart showing hours-ON per equipment
+- **Equipment Runtime (7d)** — bar chart showing active hours-ON per equipment (only during timestamps when the filter was also running)
 - **Salt Level Trend** — line chart of daily salt ppm
-- **Runtime Distribution** — doughnut chart showing relative runtime share
+- **Runtime Distribution** — doughnut chart showing relative runtime share among actively-circulating equipment
 
 ---
 
@@ -326,6 +326,14 @@ The web app's background poller thread queries the Hayward controller every 15 s
 - Convert to hours: `hours = count × 15s / 3600` (since each snapshot represents ~15 seconds of runtime)
 
 **This runs continuously in the background** — equipment states are recorded whether or not anyone has the dashboard open in a browser. This ensures overnight spa, cleaner, and heater runtimes are captured accurately.
+
+### Active Hours
+
+The charts display **active hours**, not raw ON-hours. Pool and spa equipment only circulate water while the filter pump is running. The runtime bar chart, doughnut chart, and KPI tiles show hours-ON *only during timestamps when the filter was also ON*, giving a more accurate "actively circulating" measurement.
+
+For example: if the pool pump reported as ON for 25 hours but the filter only ran during 4 of those hours, the analytics shows **4 active hours** — the time water was actually moving through the system.
+
+The Filter Hours KPI tile naturally equals its total hours (the filter is always "on when it's on").
 
 ### Sensor Data
 

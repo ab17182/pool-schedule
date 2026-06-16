@@ -642,14 +642,16 @@ async function loadAnalytics() {
         if (kpiSalt && latest.salt_ppm != null) kpiSalt.textContent = Math.round(latest.salt_ppm);
         else if (kpiSalt) kpiSalt.textContent = '--';
 
-        // Filter & Heater hours from runtime summary
+        // Filter & Heater active hours from runtime summary.
+        // "Active" = equipment ON only during timestamps when the filter was
+        // also running, giving a true "actively circulating" measurement.
         const filtHours = runtime.summary_7d?.find(e => e.equipment === 'filter');
         const heatHours = runtime.summary_7d?.find(e => e.equipment === 'heater');
         const kpiFilter = document.getElementById('kpi-filter-hrs');
         const kpiHeater = document.getElementById('kpi-heater-hrs');
-        if (kpiFilter && filtHours) kpiFilter.textContent = filtHours.total_hours;
+        if (kpiFilter && filtHours) kpiFilter.textContent = filtHours.active_hours ?? filtHours.total_hours;
         else if (kpiFilter) kpiFilter.textContent = '--';
-        if (kpiHeater && heatHours) kpiHeater.textContent = heatHours.total_hours;
+        if (kpiHeater && heatHours) kpiHeater.textContent = heatHours.active_hours ?? heatHours.total_hours;
         else if (kpiHeater) kpiHeater.textContent = '--';
 
         // Render charts
@@ -722,13 +724,15 @@ function renderEquipmentBarChart(summary) {
     if (!canvas || !summary.length) return;
     const d = chartDefaults();
     const labels = summary.map(e => EQUIPMENT_LABELS[e.equipment] || e.equipment);
-    const values = summary.map(e => parseFloat(e.total_hours) || 0);
+    // Use active_hours — runtime only during timestamps when the filter was ON,
+    // giving an accurate "actively circulating" measurement.
+    const values = summary.map(e => parseFloat(e.active_hours ?? e.total_hours) || 0);
     chartInstances['eqBar'] = new Chart(canvas, {
         type: 'bar',
         data: {
             labels,
             datasets: [{
-                label: 'Hours (7d)', data: values,
+                label: 'Active Hours (7d)', data: values,
                 backgroundColor: EQUIPMENT_COLORS.slice(0, summary.length),
                 borderRadius: 4,
             }],
@@ -749,14 +753,14 @@ function renderRuntimePieChart(summary) {
     const canvas = document.getElementById('chart-runtime-pie');
     if (!canvas || !summary.length) return;
     const d = chartDefaults();
-    // Filter out zero-hour equipment for the pie
-    const active = summary.filter(e => (parseFloat(e.total_hours) || 0) > 0);
+    // Filter out zero-hour equipment for the pie — use active_hours
+    const active = summary.filter(e => (parseFloat(e.active_hours ?? e.total_hours) || 0) > 0);
     chartInstances['pie'] = new Chart(canvas, {
         type: 'doughnut',
         data: {
             labels: active.map(e => EQUIPMENT_LABELS[e.equipment] || e.equipment),
             datasets: [{
-                data: active.map(e => parseFloat(e.total_hours) || 0),
+                data: active.map(e => parseFloat(e.active_hours ?? e.total_hours) || 0),
                 backgroundColor: EQUIPMENT_COLORS.slice(0, active.length),
                 borderWidth: 2,
                 borderColor: d.bgColor,

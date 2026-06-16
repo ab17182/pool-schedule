@@ -179,8 +179,41 @@ def equipment_total_runtime(equipment: str, days: int = 7) -> dict:
     return dict(row) if row else {"total_hours": 0}
 
 
+def equipment_active_runtime(equipment: str, days: int = 7) -> dict:
+    """Hours-ON for *equipment* only during timestamps when the filter is also ON.
+
+    Pool and spa equipment only circulate water while the filter pump runs.
+    This query counts an equipment's ON snapshots exclusively at moments
+    where a corresponding filter='ON' snapshot exists at the same timestamp,
+    giving a more accurate "actively running" measurement.
+    """
+    with _get_conn() as conn:
+        row = conn.execute("""
+            SELECT ROUND(COUNT(*) * 15.0 / 3600.0, 1) AS active_hours
+              FROM equipment_states es
+             WHERE es.equipment = ? AND es.state = 'ON'
+               AND es.timestamp >= datetime('now', ?)
+               -- Only count this snapshot when filter was also ON at the same time
+               AND EXISTS (
+                   SELECT 1
+                     FROM equipment_states ef
+                    WHERE ef.timestamp = es.timestamp
+                      AND ef.equipment = 'filter'
+                      AND ef.state = 'ON'
+               )
+        """, (equipment, f"-{days} days")).fetchone()
+    return dict(row) if row else {"active_hours": 0}
+
+
 def last_7d_runtime_summary() -> list[dict]:
-    """Total hours ON (last 7 days) for every known equipment."""
+    """Total hours ON (last 7 days) for every known equipment.
+
+    Returns two columns per row:
+      - total_hours : raw hours-ON regardless of other equipment
+      - active_hours : hours-ON only during timestamps when the filter was also
+                       running (more accurate "actively circulating" measurement).
+                       For 'filter' itself, active_hours equals total_hours.
+    """
     equipment_list = [
         "filter", "pool", "spa", "heater", "cleaner",
         "waterfall", "lights", "spa_light", "blower",
@@ -188,11 +221,28 @@ def last_7d_runtime_summary() -> list[dict]:
     result: list[dict] = []
     with _get_conn() as conn:
         for eq in equipment_list:
+            # Total hours (always useful)
             row = conn.execute("""
                 SELECT ROUND(COUNT(*) * 15.0 / 3600.0, 1) AS total_hours
                   FROM equipment_states
                  WHERE equipment = ? AND state = 'ON'
                    AND timestamp >= datetime('now', '-7 days')
             """, (eq,)).fetchone()
-            result.append({"equipment": eq, "total_hours": (row["total_hours"] if row else 0)})
+            # Active hours — only when filter is ON (same for filter itself)
+            row_active = conn.execute("""
+                SELECT ROUND(COUNT(*) * 15.0 / 3600.0, 1) AS active_hours
+                  FROM equipment_states es
+                 WHERE es.equipment = ? AND es.state = 'ON'
+                   AND es.timestamp >= datetime('now', '-7 days')
+                   AND EXISTS (
+                       SELECT 1 FROM equipment_states ef
+                        WHERE ef.timestamp = es.timestamp
+                          AND ef.equipment = 'filter' AND ef.state = 'ON'
+                   )
+            """, (eq,)).fetchone()
+            result.append({
+                "equipment": eq,
+                "total_hours": row["total_hours"] if row else 0,
+                "active_hours": row_active["active_hours"] if row_active else 0,
+            })
     return result
