@@ -44,6 +44,26 @@ Plus one menu-navigated item:
 
 ---
 
+## Screenshots
+
+**Status Tab** — Live LCD display, ON/OFF toggles, and health indicators.
+
+![Status Tab](screenshots/01_status_tab.png)
+
+**Schedule Tab** — Edit ON/OFF time windows per equipment; supports multiple windows and syncs to Airflow automatically.
+
+![Schedule Tab](screenshots/02_schedule_tab.png)
+
+**History Tab** — Recent manual toggles with timestamps, details, and Airflow DAG run history.
+
+![History Tab](screenshots/03_history_tab.png)
+
+**Analytics Tab** — KPI tiles, air temp trends, salt level, equipment runtime bar chart, and distribution doughnut.
+
+![Analytics Tab](screenshots/04_analytics_tab.png)
+
+---
+
 ## Architecture
 
 ```mermaid
@@ -372,8 +392,10 @@ print(r.text)
 ```
 pool-schedule/
 ├── README.md                 # This file
+├── LICENSE                   # MIT License
 ├── config.example.py         # Template for web app configuration
 ├── .gitignore                # Excludes credentials and runtime files
+├── screenshots/              # Dashboard screenshots (Status, Schedule, History, Analytics)
 ├── web/                      # FastAPI web dashboard
 │   ├── app.py               # Main application (FastAPI + uvicorn)
 │   ├── config.py            # ← NOT committed; copy from config.example.py

@@ -23,6 +23,5 @@ logs/*.log
 .vscode/
 .idea/
 
-# Screenshots and backups (local dev artifacts)
-screenshots/
+# Backups (local dev artifacts)
 *.bak
