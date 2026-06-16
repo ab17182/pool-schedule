@@ -1,0 +1,638 @@
+/* Pool Equipment Scheduler — Mobile-first CSS */
+
+:root {
+    --color-bg: #f5f5f5;
+    --color-card: #ffffff;
+    --color-text: #333;
+    --color-muted: #666;
+    --color-border: #e0e0e0;
+    --color-primary: #2196F3;
+    --color-primary-dark: #1976D2;
+    --color-on: #4CAF50;
+    --color-off: #9E9E9E;
+    --color-unknown: #FF9800;
+    --color-error: #f44336;
+    --color-success: #4CAF50;
+    --color-warning: #FF9800;
+    --radius: 8px;
+    --shadow: 0 2px 4px rgba(0,0,0,0.1);
+    /* derived colours */
+    --color-tab-hover: #e8e8e8;
+    --color-th-bg: #f9f9f9;
+    --color-input-disabled-bg: #f5f5f5;
+    --color-error-bg: #ffebee;
+    --color-badge-on-bg: #e8f5e9;
+    --color-badge-off-bg: #f5f5f5;
+    --color-badge-unknown-bg: #fff3e0;
+}
+
+/* ── Dark theme overrides ── */
+[data-theme="dark"] {
+    --color-bg: #121212;
+    --color-card: #1e1e1e;
+    --color-text: #e0e0e0;
+    --color-muted: #a0a0a0;
+    --color-border: #333333;
+    --shadow: 0 2px 4px rgba(0,0,0,0.45);
+    --color-tab-hover: #2c2c2c;
+    --color-th-bg: #252525;
+    --color-input-disabled-bg: #2a2a2a;
+    --color-error-bg: #3e1f1f;
+    --color-badge-on-bg: #1b331b;
+    --color-badge-off-bg: #2a2a2a;
+    --color-badge-unknown-bg: #3e3020;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--color-bg);
+    color: var(--color-text);
+    line-height: 1.5;
+    padding: 16px;
+}
+
+/* Header */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding: 12px 16px;
+    background: var(--color-card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+.header-branding {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.pool-icon {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+}
+
+.header-text {
+    display: flex;
+    flex-direction: column;
+}
+
+header h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0.08em;
+}
+
+.header-subtitle {
+    font-size: 0.78rem;
+    color: var(--color-muted);
+    margin: 0;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+}
+
+#health-indicators {
+    display: flex;
+    gap: 12px;
+}
+
+.health-dot {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: var(--color-muted);
+}
+
+.health-dot::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-unknown);
+}
+
+.health-dot.ok::before { background: var(--color-on); }
+.health-dot.error::before { background: var(--color-error); }
+.health-dot.unknown::before { background: var(--color-unknown); }
+
+/* ── Theme Toggle Button ── */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.theme-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: var(--color-bg);
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s;
+    box-shadow: var(--shadow);
+}
+
+.theme-toggle-btn:hover {
+    background: var(--color-tab-hover);
+}
+
+.theme-toggle-btn svg {
+    width: 18px;
+    height: 18px;
+    fill: var(--color-muted);
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+/* Sun visible in dark mode, moon visible in light mode */
+.theme-toggle-btn .icon-sun   { display: none; }
+.theme-toggle-btn .icon-moon  { display: inline-block; }
+[data-theme="dark"] .theme-toggle-btn .icon-sun   { display: inline-block; }
+[data-theme="dark"] .theme-toggle-btn .icon-moon  { display: none; }
+
+/* Tabs */
+nav#tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 16px;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 10px 16px;
+    border: none;
+    background: var(--color-card);
+    color: var(--color-muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: var(--radius) var(--radius) 0 0;
+    transition: all 0.2s;
+}
+
+.tab-btn:hover { background: var(--color-tab-hover); }
+.tab-btn.active {
+    background: var(--color-primary);
+    color: white;
+}
+
+/* Tab content */
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+h2 {
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+    color: var(--color-text);
+}
+
+h3 {
+    font-size: 1rem;
+    margin: 16px 0 8px;
+    color: var(--color-muted);
+}
+
+.help-text {
+    font-size: 0.85rem;
+    color: var(--color-muted);
+    margin-bottom: 12px;
+}
+
+/* LCD Display */
+.lcd-display {
+    background: #1a1a2e;
+    color: #00ff00;
+    font-family: 'Courier New', monospace;
+    padding: 12px;
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+    border: 2px solid #333;
+}
+
+.lcd-line {
+    font-size: 1rem;
+    padding: 4px 0;
+    min-height: 1.5em;
+}
+
+.lcd-warning {
+    color: #ff4444;
+    font-size: 0.85rem;
+    margin-top: 4px;
+}
+
+/* Equipment table */
+.equipment-table,
+.schedule-table,
+.history-table,
+.dag-runs-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--color-card);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    margin-bottom: 16px;
+}
+
+/* Equipment icon row — icon + label side by side */
+.equipment-name-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.row-icon {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+}
+
+.equipment-table th,
+.equipment-table td,
+.schedule-table th,
+.schedule-table td,
+.history-table th,
+.history-table td,
+.dag-runs-table th,
+.dag-runs-table td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.equipment-table th,
+.schedule-table th,
+.history-table th,
+.dag-runs-table th {
+    background: var(--color-th-bg);
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--color-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+/* Badges */
+.badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.badge-on { background: var(--color-badge-on-bg); color: var(--color-on); }
+.badge-off { background: var(--color-badge-off-bg); color: var(--color-off); }
+.badge-unknown { background: var(--color-badge-unknown-bg); color: var(--color-unknown); }
+
+/* Buttons */
+.btn-toggle, .btn-save {
+    padding: 6px 14px;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+/* ── Slider Toggle Switch ── */
+
+.toggle-switch {
+    display: inline-block;
+    position: relative;
+    width: 52px;
+    height: 30px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Hidden native checkbox — keeps accessibility intact */
+.toggle-input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+}
+
+/* Track (pill) — OFF: light grey */
+.toggle-slider {
+    position: absolute;
+    inset: 0;
+    background: #cdcdcd;
+    border-radius: 30px;
+    transition: background 0.3s ease;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+/* Knob (white circle) — rests on the left when OFF */
+.toggle-slider::after {
+    content: '';
+    position: absolute;
+    height: 24px;
+    width: 24px;
+    left: 3px;
+    bottom: 3px;
+    background: #ffffff;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.18);
+}
+
+/* ON state — track turns saturated blue, knob slides right */
+.toggle-input:checked + .toggle-slider {
+    background: #2196F3;
+}
+
+.toggle-input:checked + .toggle-slider::after {
+    transform: translateX(22px);
+}
+
+/* Hover — subtle shadow lift on the knob */
+.toggle-switch:hover .toggle-slider::after {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+/* Active press — slight scale-down for tactile feel */
+.toggle-switch:active .toggle-slider::after {
+    transform: scale(0.93);
+}
+.toggle-switch:active .toggle-input:checked + .toggle-slider::after {
+    transform: translateX(22px) scale(0.93);
+}
+
+/* Focus-visible for keyboard accessibility */
+.toggle-input:focus-visible + .toggle-slider {
+    outline: 2px solid #2196F3;
+    outline-offset: 2px;
+}
+
+/* Unknown / loading state — amber pulse */
+.toggle-switch.unknown .toggle-slider {
+    background: transparent;
+    border: 2px solid var(--color-unknown);
+    box-shadow: none;
+}
+
+.toggle-switch.unknown .toggle-slider::after {
+    background: #FF9800;
+    box-shadow: none;
+    animation: toggle-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes toggle-pulse {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.4; }
+}
+
+.btn-save {
+    background: var(--color-on);
+    color: white;
+    padding: 12px 24px;
+    font-size: 1rem;
+    width: 100%;
+    max-width: 300px;
+    display: block;
+    margin: 16px auto;
+}
+
+.btn-save:hover { background: #43a047; }
+
+/* Time inputs */
+.time-input {
+    padding: 6px 8px;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    font-size: 0.9rem;
+    width: 100px;
+}
+
+.time-input:disabled {
+    background: var(--color-input-disabled-bg);
+    color: #999;
+}
+
+.disabled-checkbox {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+/* Schedule window management buttons */
+.schedule-window {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+}
+
+.schedule-window:last-of-type { margin-bottom: 0; }
+
+.btn-add-window {
+    background: var(--color-primary);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.btn-add-window:hover { background: var(--color-primary-dark); }
+
+.btn-remove-window {
+    background: var(--color-error);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 22px;
+    height: 28px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.btn-remove-window:hover { background: #c62828; }
+.btn-remove-window:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.window-label {
+    font-size: 0.75rem;
+    color: var(--color-muted);
+    min-width: 20px;
+    text-align: right;
+}
+
+/* Highlight schedule windows with missing/invalid time values */
+.schedule-window.input-error input[type="time"] {
+    border-color: var(--color-error);
+    background: var(--color-error-bg);
+    box-shadow: 0 0 0 2px rgba(244, 67, 54, 0.2);
+}
+
+/* Timestamp */
+.timestamp {
+    font-size: 0.8rem;
+    color: var(--color-muted);
+    text-align: right;
+}
+
+/* History table details */
+.history-table td {
+    font-size: 0.85rem;
+}
+
+.history-table td:first-child {
+    white-space: nowrap;
+    color: var(--color-muted);
+}
+
+/* DAG run states */
+.state-queued { color: var(--color-unknown); }
+.state-running { color: var(--color-primary); }
+.state-success { color: var(--color-on); }
+.state-failed { color: var(--color-error); }
+.state-skipped { color: var(--color-off); }
+
+/* Error message */
+.error-message {
+    background: var(--color-error-bg);
+    color: var(--color-error);
+    padding: 8px 12px;
+    border-radius: 4px;
+    margin-bottom: 12px;
+    font-size: 0.85rem;
+}
+
+/* Toast notification */
+.toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 24px;
+    border-radius: 24px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: white;
+    display: none;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.toast-success { background: var(--color-success); }
+.toast-error { background: var(--color-error); }
+
+/* Responsive */
+@media (min-width: 600px) {
+    body { padding: 24px; max-width: 800px; margin: 0 auto; }
+    .pool-icon { width: 56px; height: 56px; }
+    header h1 { font-size: 1.7rem; }
+}
+
+/* ──────────────────────────────────────────────
+   Analytics / PowerBI-style Dashboard
+   ────────────────────────────────────────────── */
+
+/* KPI row — four big-number cards */
+.kpi-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.kpi-card {
+    background: var(--color-card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.kpi-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-muted);
+    font-weight: 600;
+}
+
+.kpi-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--color-text);
+    line-height: 1.2;
+}
+
+.kpi-unit {
+    font-size: 0.8rem;
+    color: var(--color-muted);
+    margin-left: 2px;
+}
+
+/* Charts grid — two columns */
+.charts-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+}
+
+.chart-card {
+    background: var(--color-card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 16px;
+    position: relative;
+}
+
+.chart-header {
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--color-muted);
+    margin-bottom: 12px;
+}
+
+.chart-card canvas {
+    width: 100% !important;
+    height: 240px !important;
+}
+
+@media (min-width: 700px) {
+    .kpi-row { grid-template-columns: repeat(4, 1fr); }
+    .charts-grid { grid-template-columns: 1fr 1fr; }
+}

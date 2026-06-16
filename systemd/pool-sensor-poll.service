@@ -1,0 +1,6 @@
+[Unit]
+Description=Pool Schedule Sensor Poll (LCD scan every 30 min)
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/curl -s -X POST http://127.0.0.1:8700/api/poll-sensors -o /var/log/pool-sensor-poll.log

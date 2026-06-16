@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P.C.S.S.</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <div class="header-branding">
+            <!-- Inline SVG: small inground pool icon -->
+            <svg class="pool-icon" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                <!-- Deck -->
+                <rect x="2" y="8" width="60" height="48" rx="6" ry="6" fill="#d7ccc8"/>
+                <!-- Pool shell -->
+                <rect x="8" y="14" width="48" height="36" rx="4" ry="4" fill="#5d4037"/>
+                <!-- Water -->
+                <rect x="10" y="16" width="44" height="32" rx="3" ry="3" fill="#29b6f6"/>
+                <!-- Tile line -->
+                <rect x="8" y="14" width="48" height="4" rx="2" ry="2" fill="#0d47a1" opacity="0.5"/>
+                <!-- Water shimmer 1 -->
+                <path d="M14,30 Q22,26 30,30 Q38,34 46,30" stroke="#81d4fa" stroke-width="1.5" fill="none" opacity="0.7"/>
+                <!-- Water shimmer 2 -->
+                <path d="M14,38 Q22,34 30,38 Q38,42 46,38" stroke="#81d4fa" stroke-width="1.5" fill="none" opacity="0.7"/>
+            </svg>
+            <div class="header-text">
+                <h1>P.C.S.S.</h1>
+                <p class="header-subtitle">Pool Control and Scheduling System</p>
+            </div>
+        </div>
+        <div class="header-actions">
+            <button id="theme-toggle" class="theme-toggle-btn" type="button" title="Toggle dark mode">
+                <!-- Moon icon (visible in light mode) -->
+                <svg class="icon-moon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                </svg>
+                <!-- Sun icon (visible in dark mode) -->
+                <svg class="icon-sun" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="5"/>
+                    <line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </button>
+            <div id="health-indicators">
+                <span id="health-controller" class="health-dot unknown" title="Hayward Controller">Controller</span>
+                <span id="health-airflow" class="health-dot unknown" title="Airflow API">Airflow</span>
+            </div>
+        </div>
+    </header>
+
+    <nav id="tabs">
+        <button class="tab-btn active" data-tab="status">Status</button>
+        <button class="tab-btn" data-tab="schedule">Schedule</button>
+        <button class="tab-btn" data-tab="history">History</button>
+        <button class="tab-btn" data-tab="analytics">Analytics</button>
+    </nav>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <div id="toast" class="toast"></div>
+
+    {% block scripts %}{% endblock %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <script src="/static/app.js"></script>
+</body>
+</html>

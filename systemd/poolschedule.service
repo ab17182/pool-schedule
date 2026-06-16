@@ -1,0 +1,24 @@
+[Unit]
+Description=Pool Equipment Scheduler Web Frontend
+After=network.target airflow-webserver.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+WorkingDirectory=/root/poolschedule
+Environment=PATH=/root/airflow/airflow-venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+Environment=VIRTUAL_ENV=/root/airflow/airflow-venv
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/root/airflow/airflow-venv/bin/uvicorn app:app --host 0.0.0.0 --port 8700 --log-level info
+Restart=on-failure
+RestartSec=10
+KillMode=mixed
+KillSignal=SIGTERM
+TimeoutStopSec=60
+StandardOutput=append:/root/poolschedule/logs/app.log
+StandardError=append:/root/poolschedule/logs/app.log
+
+[Install]
+WantedBy=multi-user.target

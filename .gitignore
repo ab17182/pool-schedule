@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Project runtime files
+config.py
+schedules.json
+action_history.json
+metrics.db
+metrics.db-wal
+metrics.db-shm
+logs/*.log
+
+# OS / IDE
+.DS_Store
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Screenshots and backups (local dev artifacts)
+screenshots/
+*.bak
