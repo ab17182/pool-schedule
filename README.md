@@ -400,4 +400,4 @@ pool-schedule/
 
 ## License
 
-Private project. No license applied.
+[MIT License](LICENSE) — free to use, modify, and share.
